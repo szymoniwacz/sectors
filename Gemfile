@@ -51,6 +51,7 @@ gem 'bootsnap', require: false
 
 gem 'grape', '2.1.0'
 gem 'grape-entity', '1.0.1'
+gem 'react-rails', '3.2.1'
 gem 'webpacker', '5.4.4'
 
 group :development, :test do
