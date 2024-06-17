@@ -51,6 +51,9 @@ group :development, :test do
   gem 'debug', platforms: %i[mri windows]
   gem 'pry-rails'
   gem 'rspec-rails', '6.1.2'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :development do
