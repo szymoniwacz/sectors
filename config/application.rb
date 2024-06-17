@@ -25,5 +25,8 @@ module Sectors
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: '_sectors_session', expire_after: 30.minutes
   end
 end

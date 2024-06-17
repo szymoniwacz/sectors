@@ -9,5 +9,6 @@ module V1
     end
 
     mount V1::Sectors::Base
+    mount V1::Users::Base
   end
 end
