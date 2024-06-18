@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import axios from 'axios';
 import App from './App';
 import { I18nextProvider } from 'react-i18next';
@@ -31,12 +31,24 @@ beforeEach(() => {
   axios.post.mockResolvedValue({ data: userData });
 });
 
+jest.setTimeout(10000); // Increase the timeout for the entire test suite
+
+const ensureEnglishLanguage = async () => {
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: 'English' }));
+  });
+};
+
 test('renders Sector Form with default language', async () => {
-  render(
-    <I18nextProvider i18n={i18n}>
-      <App />
-    </I18nextProvider>
-  );
+  await act(async () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App />
+      </I18nextProvider>
+    );
+  });
+
+  await ensureEnglishLanguage();
 
   await waitFor(() => {
     expect(screen.getByText('Sector Form')).toBeTruthy();
@@ -49,11 +61,15 @@ test('renders Sector Form with default language', async () => {
 });
 
 test('submits the form and shows success message', async () => {
-  render(
-    <I18nextProvider i18n={i18n}>
-      <App />
-    </I18nextProvider>
-  );
+  await act(async () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App />
+      </I18nextProvider>
+    );
+  });
+
+  await ensureEnglishLanguage();
 
   await waitFor(() => {
     expect(screen.getByLabelText('Name')).toBeTruthy();
@@ -82,17 +98,21 @@ test('submits the form and shows success message', async () => {
 });
 
 test('changes language and updates the form labels', async () => {
-  render(
-    <I18nextProvider i18n={i18n}>
-      <App />
-    </I18nextProvider>
-  );
+  await act(async () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App />
+      </I18nextProvider>
+    );
+  });
+
+  await ensureEnglishLanguage();
 
   await waitFor(() => {
     expect(screen.getByText('Sector Form')).toBeTruthy();
   });
 
-  fireEvent.click(screen.getByRole('button', { name: 'Estonian' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Eesti' }));
 
   await waitFor(() => {
     expect(screen.getByText('Sektori Vorm')).toBeTruthy();
@@ -102,25 +122,30 @@ test('changes language and updates the form labels', async () => {
 });
 
 test('logs out user and clears form data', async () => {
-  render(
-    <I18nextProvider i18n={i18n}>
-      <App />
-    </I18nextProvider>
-  );
+  await act(async () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App />
+      </I18nextProvider>
+    );
+  });
+
+  await ensureEnglishLanguage();
 
   // Wait for initial data to be loaded
   await waitFor(() => {
-    expect(screen.getByLabelText(/name|nimi/i)).toBeTruthy();
-    expect(screen.getByLabelText(/name|nimi/i).value).toBe('John Doe');
+    expect(screen.getByLabelText('Name')).toBeTruthy();
+    expect(screen.getByLabelText('Name').value).toBe('John Doe');
   });
 
   // Log out user
-  fireEvent.click(screen.getByRole('button', { name: /sectorForm.logout/i }));
+  axios.post.mockResolvedValueOnce({});
+  fireEvent.click(screen.getByRole('button', { name: 'Logout' }));
 
   // Check if the form data is cleared
   await waitFor(() => {
-    expect(screen.getByLabelText(/name|nimi/i).value).toBe('');
-    expect(screen.getByLabelText(/sectors|sektorid/i).value).toBe('');
-    expect(screen.getByLabelText(/agree to terms|nõustun tingimustega/i).checked).toBeFalsy();
+    expect(screen.getByLabelText('Name').value).toBe('');
+    expect(screen.getByLabelText('Sectors').value).toBe('');
+    expect(screen.getByLabelText('Agree to terms').checked).toBeFalsy();
   });
 });

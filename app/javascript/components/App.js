@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Alert, Card, ButtonGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import '../i18n/i18n'; // Import the i18n configuration
+import '../i18n/i18n';
 import './App.css';
 
 const App = () => {
@@ -13,8 +13,9 @@ const App = () => {
   const [sectors, setSectors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messageKey, setMessageKey] = useState('');
-  const [messageType, setMessageType] = useState(''); // New state for message type
-  const [slideOut, setSlideOut] = useState(false); // New state for slide out animation
+  const [messageType, setMessageType] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [slideOut, setSlideOut] = useState(false);
 
   useEffect(() => {
     const fetchSectors = async () => {
@@ -49,10 +50,9 @@ const App = () => {
   }, [i18n.language]);
 
   useEffect(() => {
-    // Update the message translation when the language changes
     if (messageKey) {
-      setSlideOut(false); // Reset slide-out state
-      hideMessageAfterDelay(); // Hide message after delay
+      setSlideOut(false);
+      hideMessageAfterDelay();
     }
   }, [i18n.language, messageKey]);
 
@@ -71,21 +71,18 @@ const App = () => {
     try {
       await axios.post('/api/v1/users', { name, sector_ids: sectorIds, agree_to_terms: agreeToTerms });
       setMessageKey('sectorForm.formSubmittedSuccessfully');
-      setMessageType('success'); // Set message type to success
-      setSlideOut(false); // Reset slide-out state
-      hideMessageAfterDelay(); // Hide message after delay
+      setMessageType('success');
+      setErrorMessage('');
+      setSlideOut(false);
+      hideMessageAfterDelay();
     } catch (error) {
       console.error('Error submitting form:', error);
       setMessageKey('sectorForm.failedToSubmitForm');
-      setMessageType('danger'); // Set message type to danger
-      setSlideOut(false); // Reset slide-out state
-      hideMessageAfterDelay(); // Hide message after delay
+      setMessageType('danger');
+      setErrorMessage(error.response?.data?.error?.details || error.message);
+      setSlideOut(false);
+      hideMessageAfterDelay();
     }
-  };
-
-  const handleLanguageChange = (language) => {
-    i18n.changeLanguage(language);
-    // No need to clear the message or message type when changing language
   };
 
   const handleLogout = async () => {
@@ -102,19 +99,25 @@ const App = () => {
       console.error('Error logging out:', error);
       setMessageKey('sectorForm.failedToLogout');
       setMessageType('danger');
+      setErrorMessage(error.response?.data?.error?.details || error.message);
       setSlideOut(false);
       hideMessageAfterDelay();
     }
   };
 
+  const handleLanguageChange = (language) => {
+    i18n.changeLanguage(language);
+  };
+
   const hideMessageAfterDelay = () => {
     setTimeout(() => {
-      setSlideOut(true); // Trigger slide-out animation
+      setSlideOut(true);
       setTimeout(() => {
         setMessageKey('');
         setMessageType('');
-      }, 500); // Wait for the slide-out animation to finish
-    }, 5000); // Hide message after 5 seconds
+        setErrorMessage('');
+      }, 500);
+    }, 5000);
   };
 
   if (loading) return <div>{t('sectorForm.loading')}</div>;
@@ -154,7 +157,12 @@ const App = () => {
                   </Button>
                 </Col>
               </Row>
-              {messageKey && <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>{t(messageKey)}</Alert>}
+              {messageKey && (
+                <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>
+                  {t(messageKey)}
+                  {errorMessage && <div>{errorMessage}</div>}
+                </Alert>
+              )}
               <Form onSubmit={handleSubmit} data-testid="sector-form">
                 <Form.Group controlId="formName">
                   <Form.Label>{t('sectorForm.name')}</Form.Label>

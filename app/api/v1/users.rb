@@ -19,13 +19,13 @@ module V1
         end
         post do
           user = current_user || User.new
-          user.update!(
-            name: params[:name],
-            agree_to_terms: params[:agree_to_terms]
-          )
-          user.sector_ids = params[:sector_ids]
-          session[:user_id] = user.id
-          present user, with: V1::Entities::User
+          if user.update!(name: params[:name], agree_to_terms: params[:agree_to_terms], sector_ids: params[:sector_ids])
+            session[:user_id] = user.id
+            present user, with: V1::Entities::User
+          end
+        rescue ActiveRecord::RecordInvalid => e
+          error = { status: 422, message: 'Validation failed', details: e.message }
+          error!(V1::Entities::Error.represent(error), 422)
         end
 
         get :me do
