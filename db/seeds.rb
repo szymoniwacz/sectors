@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Clear existing sectors
+UserSector.delete_all
 Sector.delete_all
 
 # Define sectors and sub-sectors

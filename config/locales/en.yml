@@ -1,31 +1,79 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  sectors:
+    manufacturing: "Manufacturing"
+    construction_materials: "Construction materials"
+    electronics_and_optics: "Electronics and Optics"
+    food_and_beverage: "Food and Beverage"
+    bakery_and_confectionery_products: "Bakery & confectionery products"
+    beverages: "Beverages"
+    fish_and_fish_products: "Fish & fish products"
+    meat_and_meat_products: "Meat & meat products"
+    milk_and_dairy_products: "Milk & dairy products"
+    other: "Other"
+    sweets_and_snack_food: "Sweets & snack food"
+    furniture: "Furniture"
+    bathroomsauna: "Bathroom/sauna"
+    bedroom: "Bedroom"
+    childrens_room: "Children’s room"
+    kitchen: "Kitchen"
+    living_room: "Living room"
+    office: "Office"
+    other_furniture: "Other (Furniture)"
+    outdoor: "Outdoor"
+    project_furniture: "Project furniture"
+    machinery: "Machinery"
+    machinery_components: "Machinery components"
+    machinery_equipmenttools: "Machinery equipment/tools"
+    manufacture_of_machinery: "Manufacture of machinery"
+    maritime: "Maritime"
+    aluminium_and_steel_workboats: "Aluminium and steel workboats"
+    boatyacht_building: "Boat/Yacht building"
+    ship_repair_and_conversion: "Ship repair and conversion"
+    metal_structures: "Metal structures"
+    repair_and_maintenance_service: "Repair and maintenance service"
+    metalworking: "Metalworking"
+    construction_of_metal_structures: "Construction of metal structures"
+    houses_and_buildings: "Houses and buildings"
+    metal_products: "Metal products"
+    metal_works: "Metal works"
+    cncmachining: "CNC-machining"
+    forgings_fasteners: "Forgings, Fasteners"
+    gas_plasma_laser_cutting: "Gas, Plasma, Laser cutting"
+    mig_tig_aluminum_welding: "MIG, TIG, Aluminum welding"
+    plastic_and_rubber: "Plastic and Rubber"
+    packaging: "Packaging"
+    plastic_goods: "Plastic goods"
+    plastic_processing_technology: "Plastic processing technology"
+    blowing: "Blowing"
+    moulding: "Moulding"
+    plastics_welding_and_processing: "Plastics welding and processing"
+    plastic_profiles: "Plastic profiles"
+    printing: "Printing"
+    advertising: "Advertising"
+    bookperiodicals_printing: "Book/Periodicals printing"
+    labelling_and_packaging_printing: "Labelling and packaging printing"
+    textile_and_clothing: "Textile and Clothing"
+    clothing: "Clothing"
+    textile: "Textile"
+    wood: "Wood"
+    other_wood: "Other (Wood)"
+    wooden_building_materials: "Wooden building materials"
+    wooden_houses: "Wooden houses"
+    creative_industries: "Creative industries"
+    energy_technology: "Energy technology"
+    environment: "Environment"
+    service: "Service"
+    business_services: "Business services"
+    engineering: "Engineering"
+    information_technology_and_telecommunications: "Information Technology and Telecommunications"
+    data_processing_web_portals_emarketing: "Data processing, Web portals, E-marketing"
+    programming_consultancy: "Programming, Consultancy"
+    software_hardware: "Software, Hardware"
+    telecommunications: "Telecommunications"
+    tourism: "Tourism"
+    translation_services: "Translation services"
+    transport_and_logistics: "Transport and Logistics"
+    air: "Air"
+    rail: "Rail"
+    road: "Road"
+    water: "Water"

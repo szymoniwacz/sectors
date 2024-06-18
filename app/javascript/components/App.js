@@ -1,23 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Button, Container, Row, Col, Alert, Card } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Alert, Card, ButtonGroup } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import '../i18n/i18n'; // Import the i18n configuration
 import './App.css';
 
 const App = () => {
+  const { t, i18n } = useTranslation();
   const [name, setName] = useState('');
   const [sectorIds, setSectorIds] = useState([]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [sectors, setSectors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
+  const [messageKey, setMessageKey] = useState('');
+  const [messageType, setMessageType] = useState(''); // New state for message type
+  const [slideOut, setSlideOut] = useState(false); // New state for slide out animation
 
   useEffect(() => {
-    axios.get('/api/v1/sectors')
-      .then(response => setSectors(response.data))
-      .catch(error => console.error('Error fetching sectors:', error));
+    const fetchSectors = async () => {
+      try {
+        const response = await axios.get('/api/v1/sectors', {
+          params: { locale: i18n.language }
+        });
+        setSectors(response.data);
+      } catch (error) {
+        console.error('Error fetching sectors:', error);
+      }
+    };
 
-    axios.get('/api/v1/users/me')
-      .then(response => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('/api/v1/users/me');
         const user = response.data;
         if (user) {
           setName(user.name);
@@ -25,41 +38,67 @@ const App = () => {
           setAgreeToTerms(user.agree_to_terms);
         }
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching current user:', error);
         setLoading(false);
-      });
-  }, []);
+      }
+    };
 
-  const renderOptions = (sectors, parentId = null, level = 0) => {
-    return sectors
+    fetchSectors();
+    fetchUser();
+  }, [i18n.language]);
+
+  useEffect(() => {
+    // Update the message translation when the language changes
+    if (messageKey) {
+      setSlideOut(false); // Reset slide-out state
+      hideMessageAfterDelay(); // Hide message after delay
+    }
+  }, [i18n.language, messageKey]);
+
+  const renderOptions = (sectors, parentId = null, level = 0) =>
+    sectors
       .filter(sector => sector.parent_id === parentId)
       .map(sector => (
         <React.Fragment key={sector.id}>
-          <option value={sector.id}>
-            {Array(level).fill('\u00A0\u00A0\u00A0\u00A0').join('')}{sector.name}
-          </option>
+          <option value={sector.id}>{Array(level).fill('\u00A0\u00A0\u00A0\u00A0').join('')}{sector.name}</option>
           {renderOptions(sectors, sector.id, level + 1)}
         </React.Fragment>
       ));
-  };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    axios.post('/api/v1/users', { name, sector_ids: sectorIds, agree_to_terms: agreeToTerms })
-      .then(response => {
-        setMessage('Form submitted successfully!');
-      })
-      .catch(error => {
-        console.error('Error submitting form:', error);
-        setMessage('Failed to submit form. Please try again.');
-      });
+    try {
+      await axios.post('/api/v1/users', { name, sector_ids: sectorIds, agree_to_terms: agreeToTerms });
+      setMessageKey('sectorForm.formSubmittedSuccessfully');
+      setMessageType('success'); // Set message type to success
+      setSlideOut(false); // Reset slide-out state
+      hideMessageAfterDelay(); // Hide message after delay
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setMessageKey('sectorForm.failedToSubmitForm');
+      setMessageType('danger'); // Set message type to danger
+      setSlideOut(false); // Reset slide-out state
+      hideMessageAfterDelay(); // Hide message after delay
+    }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleLanguageChange = (language) => {
+    i18n.changeLanguage(language);
+    // No need to clear the message or message type when changing language
+  };
+
+  const hideMessageAfterDelay = () => {
+    setTimeout(() => {
+      setSlideOut(true); // Trigger slide-out animation
+      setTimeout(() => {
+        setMessageKey('');
+        setMessageType('');
+      }, 500); // Wait for the slide-out animation to finish
+    }, 5000); // Hide message after 5 seconds
+  };
+
+  if (loading) return <div>{t('sectorForm.loading')}</div>;
 
   return (
     <Container>
@@ -67,45 +106,43 @@ const App = () => {
         <Col md="8">
           <Card>
             <Card.Body>
-              <h1 className="text-center mb-4">Sector Form</h1>
-              {message && <Alert variant={message.includes('successfully') ? 'success' : 'danger'}>{message}</Alert>}
+              <Row className="mb-3">
+                <Col>
+                  <h1 className="text-center">{t('sectorForm.title')}</h1>
+                </Col>
+                <Col md="auto">
+                  <ButtonGroup>
+                    <Button
+                      variant={i18n.language === 'en' ? 'primary' : 'outline-primary'}
+                      onClick={() => handleLanguageChange('en')}
+                    >
+                      English
+                    </Button>
+                    <Button
+                      variant={i18n.language === 'et' ? 'primary' : 'outline-primary'}
+                      onClick={() => handleLanguageChange('et')}
+                    >
+                      Eesti
+                    </Button>
+                  </ButtonGroup>
+                </Col>
+              </Row>
+              {messageKey && <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>{t(messageKey)}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formName">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
+                  <Form.Label>{t('sectorForm.name')}</Form.Label>
+                  <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                 </Form.Group>
                 <Form.Group controlId="formSectors" className="mt-3">
-                  <Form.Label>Sectors</Form.Label>
-                  <Form.Control
-                    as="select"
-                    multiple
-                    className="large-select"
-                    value={sectorIds}
-                    onChange={(e) => {
-                      const selectedOptions = Array.from(e.target.selectedOptions);
-                      setSectorIds(selectedOptions.map(option => parseInt(option.value)));
-                    }}
-                  >
+                  <Form.Label>{t('sectorForm.sectors')}</Form.Label>
+                  <Form.Control as="select" multiple className="large-select" value={sectorIds} onChange={(e) => setSectorIds(Array.from(e.target.selectedOptions).map(option => parseInt(option.value)))}>
                     {renderOptions(sectors)}
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="formAgree" className="mt-3">
-                  <Form.Check
-                    type="checkbox"
-                    label="Agree to terms"
-                    checked={agreeToTerms}
-                    onChange={(e) => setAgreeToTerms(e.target.checked)}
-                    required
-                  />
+                  <Form.Check type="checkbox" label={t('sectorForm.agreeToTerms')} checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
                 </Form.Group>
-                <Button variant="primary" type="submit" block="true" className="mt-4">
-                  Save
-                </Button>
+                <Button variant="primary" type="submit" block="true" className="mt-4">{t('sectorForm.save')}</Button>
               </Form>
             </Card.Body>
           </Card>

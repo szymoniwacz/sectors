@@ -1,0 +1,12 @@
+{
+  "sectorForm": {
+    "title": "Sector Form",
+    "name": "Name",
+    "sectors": "Sectors",
+    "agreeToTerms": "Agree to terms",
+    "save": "Save",
+    "formSubmittedSuccessfully": "Form submitted successfully!",
+    "failedToSubmitForm": "Failed to submit form. Please try again.",
+    "loading": "Loading..."
+  }
+}
