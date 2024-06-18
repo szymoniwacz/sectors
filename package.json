@@ -20,6 +20,7 @@
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/plugin-proposal-private-methods": "7.16.0",
     "@babel/plugin-transform-for-of": "^7.24.7",
     "@babel/plugin-transform-regenerator": "^7.24.7",
