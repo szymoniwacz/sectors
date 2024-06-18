@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_18_101724) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_18_201741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "sectors", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -32,8 +32,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_101724) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
-    t.boolean "agree_to_terms"
+    t.string "name", null: false
+    t.boolean "agree_to_terms", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
