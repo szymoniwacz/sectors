@@ -88,6 +88,25 @@ const App = () => {
     // No need to clear the message or message type when changing language
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/v1/users/logout');
+      setName('');
+      setSectorIds([]);
+      setAgreeToTerms(false);
+      setMessageKey('sectorForm.loggedOutSuccessfully');
+      setMessageType('info');
+      setSlideOut(false);
+      hideMessageAfterDelay();
+    } catch (error) {
+      console.error('Error logging out:', error);
+      setMessageKey('sectorForm.failedToLogout');
+      setMessageType('danger');
+      setSlideOut(false);
+      hideMessageAfterDelay();
+    }
+  };
+
   const hideMessageAfterDelay = () => {
     setTimeout(() => {
       setSlideOut(true); // Trigger slide-out animation
@@ -125,6 +144,14 @@ const App = () => {
                       Eesti
                     </Button>
                   </ButtonGroup>
+                </Col>
+                <Col md="auto">
+                  <Button
+                    variant="secondary"
+                    onClick={handleLogout}
+                  >
+                    {t('sectorForm.logout')}
+                  </Button>
                 </Col>
               </Row>
               {messageKey && <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>{t(messageKey)}</Alert>}

@@ -6,7 +6,9 @@
     "agreeToTerms": "Agree to terms",
     "save": "Save",
     "formSubmittedSuccessfully": "Form submitted successfully!",
-    "failedToSubmitForm": "Failed to submit form. Please try again.",
-    "loading": "Loading..."
+    "failedToSubmitForm": "Failed to submit form.",
+    "loading": "Loading...",
+    "logout": "Logout",
+    "loggedOutSuccessfully": "Logged out successfully"
   }
 }

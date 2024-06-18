@@ -6,7 +6,9 @@
     "agreeToTerms": "Nõustun tingimustega",
     "save": "Salvesta",
     "formSubmittedSuccessfully": "Vorm edukalt esitatud!",
-    "failedToSubmitForm": "Vormi esitamine ebaõnnestus. Palun proovi uuesti.",
-    "loading": "Laadimine..."
+    "failedToSubmitForm": "Vormi esitamine ebaõnnestus.",
+    "loading": "Laadimine...",
+    "logout": "Logi välja",
+    "loggedOutSuccessfully": "Edukalt välja logitud"
   }
 }
