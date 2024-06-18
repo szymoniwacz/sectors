@@ -1,5 +1,7 @@
 module.exports = function(api) {
-  if (!api.env("development")) {
+  const env = api.env();
+
+  if (env !== 'development' && env !== 'test') {
     api.cache(true);
   }
 
@@ -46,6 +48,11 @@ module.exports = function(api) {
           async: false
         }
       ]
-    ].filter(Boolean)
+    ].filter(Boolean),
+    env: {
+      test: {
+        plugins: ['@babel/plugin-transform-runtime'],
+      },
+    },
   };
 };

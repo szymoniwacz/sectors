@@ -128,7 +128,7 @@ const App = () => {
                 </Col>
               </Row>
               {messageKey && <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>{t(messageKey)}</Alert>}
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit} data-testid="sector-form">
                 <Form.Group controlId="formName">
                   <Form.Label>{t('sectorForm.name')}</Form.Label>
                   <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} required />
