@@ -31,6 +31,12 @@ module V1
         get :me do
           present current_user, with: V1::Entities::User
         end
+
+        post :logout do
+          session[:user_id] = nil if current_user
+
+          status 204
+        end
       end
     end
   end

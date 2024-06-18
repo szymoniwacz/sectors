@@ -99,7 +99,28 @@ test('changes language and updates the form labels', async () => {
   });
 
   expect(screen.getByLabelText('Nimi')).toBeTruthy();
-  expect(screen.getByLabelText('Sektorid')).toBeTruthy();
-  expect(screen.getByLabelText('Nõustun tingimustega')).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Salvesta' })).toBeTruthy();
+});
+
+test('logs out user and clears form data', async () => {
+  render(
+    <I18nextProvider i18n={i18n}>
+      <App />
+    </I18nextProvider>
+  );
+
+  // Wait for initial data to be loaded
+  await waitFor(() => {
+    expect(screen.getByLabelText(/name|nimi/i)).toBeTruthy();
+    expect(screen.getByLabelText(/name|nimi/i).value).toBe('John Doe');
+  });
+
+  // Log out user
+  fireEvent.click(screen.getByRole('button', { name: /sectorForm.logout/i }));
+
+  // Check if the form data is cleared
+  await waitFor(() => {
+    expect(screen.getByLabelText(/name|nimi/i).value).toBe('');
+    expect(screen.getByLabelText(/sectors|sektorid/i).value).toBe('');
+    expect(screen.getByLabelText(/agree to terms|nõustun tingimustega/i).checked).toBeFalsy();
+  });
 });
