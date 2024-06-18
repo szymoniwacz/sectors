@@ -5,7 +5,14 @@ module V1
     class Base < Grape::API
       resource :sectors do
         get do
-          sectors = Sector.all
+          locale = params[:locale] || I18n.default_locale
+          sectors = Sector.all.map do |sector|
+            {
+              id: sector.id,
+              parent_id: sector.parent_id,
+              name: I18n.t("sectors.#{sector.translation_key}", locale:)
+            }
+          end
           present sectors, with: V1::Entities::Sector
         end
       end

@@ -1,0 +1,12 @@
+{
+  "sectorForm": {
+    "title": "Sektori Vorm",
+    "name": "Nimi",
+    "sectors": "Sektorid",
+    "agreeToTerms": "Nõustun tingimustega",
+    "save": "Salvesta",
+    "formSubmittedSuccessfully": "Vorm edukalt esitatud!",
+    "failedToSubmitForm": "Vormi esitamine ebaõnnestus. Palun proovi uuesti.",
+    "loading": "Laadimine..."
+  }
+}
