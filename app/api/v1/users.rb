@@ -3,6 +3,14 @@
 module V1
   module Users
     class Base < Grape::API
+      helpers do
+        def current_user
+          return nil unless session[:user_id].present?
+
+          User.find(session[:user_id])
+        end
+      end
+
       resource :users do
         params do
           requires :name, type: String
@@ -10,18 +18,18 @@ module V1
           requires :sector_ids, type: Array[Integer]
         end
         post do
-          user = User.create!(
+          user = current_user || User.new
+          user.update!(
             name: params[:name],
             agree_to_terms: params[:agree_to_terms]
           )
           user.sector_ids = params[:sector_ids]
           session[:user_id] = user.id
-          user
+          present user, with: V1::Entities::User
         end
 
         get :me do
-          user = User.find(session[:user_id])
-          present user, with: V1::Entities::User
+          present current_user, with: V1::Entities::User
         end
       end
     end
