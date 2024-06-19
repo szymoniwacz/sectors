@@ -24,7 +24,10 @@ module V1
             present user, with: V1::Entities::User
           end
         rescue ActiveRecord::RecordInvalid => e
-          error = { status: 422, message: 'Validation failed', details: e.message }
+          error_details = user.errors.details.map do |attribute, details|
+            { attribute: attribute, error: details.map { |detail| detail[:error] } }
+          end
+          error = { status: 422, message: I18n.t('errors.messages.validation_failed'), details: error_details }
           error!(V1::Entities::Error.represent(error), 422)
         end
 

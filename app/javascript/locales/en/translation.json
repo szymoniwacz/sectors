@@ -1,14 +1,46 @@
 {
+  "errors": {
+    "validation_failed": "Validation failed",
+    "record_invalid": "Record invalid"
+  },
+  "activerecord": {
+    "errors": {
+      "models": {
+        "user": {
+          "attributes": {
+            "name": {
+              "blank": "can't be blank",
+              "taken": "has already been taken"
+            },
+            "sectors": {
+              "blank": "must be selected"
+            },
+            "agree_to_terms": {
+              "inclusion": "must be accepted"
+            }
+          }
+        }
+      }
+    }
+  },
+  "attributes": {
+    "user": {
+      "name": "Name",
+      "sectors": "Sectors",
+      "agree_to_terms": "Agree to terms"
+    }
+  },
   "sectorForm": {
+    "loading": "Loading...",
     "title": "Sector Form",
     "name": "Name",
     "sectors": "Sectors",
     "agreeToTerms": "Agree to terms",
     "save": "Save",
-    "formSubmittedSuccessfully": "Form submitted successfully!",
-    "failedToSubmitForm": "Failed to submit form.",
-    "loading": "Loading...",
-    "logout": "Logout",
-    "loggedOutSuccessfully": "Logged out successfully"
+    "formSubmittedSuccessfully": "Form submitted successfully",
+    "failedToSubmitForm": "Failed to submit form",
+    "loggedOutSuccessfully": "Logged out successfully",
+    "failedToLogout": "Failed to log out",
+    "logout": "Logout"
   }
 }

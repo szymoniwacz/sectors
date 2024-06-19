@@ -12,10 +12,9 @@ const App = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [sectors, setSectors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [messageKey, setMessageKey] = useState('');
+  const [errorMessageKey, setErrorMessageKey] = useState('');
+  const [errorDetails, setErrorDetails] = useState([]);
   const [messageType, setMessageType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [slideOut, setSlideOut] = useState(false);
 
   useEffect(() => {
     const fetchSectors = async () => {
@@ -31,7 +30,9 @@ const App = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await axios.get('/api/v1/users/me');
+        const response = await axios.get('/api/v1/users/me', {
+          params: { locale: i18n.language }
+        });
         const user = response.data;
         if (user) {
           setName(user.name);
@@ -49,13 +50,6 @@ const App = () => {
     fetchUser();
   }, [i18n.language]);
 
-  useEffect(() => {
-    if (messageKey) {
-      setSlideOut(false);
-      hideMessageAfterDelay();
-    }
-  }, [i18n.language, messageKey]);
-
   const renderOptions = (sectors, parentId = null, level = 0) =>
     sectors
       .filter(sector => sector.parent_id === parentId)
@@ -69,39 +63,37 @@ const App = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post('/api/v1/users', { name, sector_ids: sectorIds, agree_to_terms: agreeToTerms });
-      setMessageKey('sectorForm.formSubmittedSuccessfully');
+      await axios.post('/api/v1/users', { name, sector_ids: sectorIds, agree_to_terms: agreeToTerms }, {
+        params: { locale: i18n.language }
+      });
+      setErrorMessageKey('sectorForm.formSubmittedSuccessfully');
       setMessageType('success');
-      setErrorMessage('');
-      setSlideOut(false);
-      hideMessageAfterDelay();
+      setErrorDetails([]);
     } catch (error) {
       console.error('Error submitting form:', error);
-      setMessageKey('sectorForm.failedToSubmitForm');
+      setErrorMessageKey('sectorForm.failedToSubmitForm');
       setMessageType('danger');
-      setErrorMessage(error.response?.data?.error?.details || error.message);
-      setSlideOut(false);
-      hideMessageAfterDelay();
+      setErrorDetails(error.response?.data?.error?.details || []);
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogout = async (event) => {
+    event.preventDefault();
     try {
-      await axios.post('/api/v1/users/logout');
+      await axios.post('/api/v1/users/logout', {}, {
+        params: { locale: i18n.language }
+      });
       setName('');
       setSectorIds([]);
       setAgreeToTerms(false);
-      setMessageKey('sectorForm.loggedOutSuccessfully');
+      setErrorMessageKey('sectorForm.loggedOutSuccessfully');
       setMessageType('info');
-      setSlideOut(false);
-      hideMessageAfterDelay();
+      setErrorDetails([]);
     } catch (error) {
       console.error('Error logging out:', error);
-      setMessageKey('sectorForm.failedToLogout');
+      setErrorMessageKey('sectorForm.failedToLogout');
       setMessageType('danger');
-      setErrorMessage(error.response?.data?.error?.details || error.message);
-      setSlideOut(false);
-      hideMessageAfterDelay();
+      setErrorDetails(error.response?.data?.error?.details || []);
     }
   };
 
@@ -109,15 +101,32 @@ const App = () => {
     i18n.changeLanguage(language);
   };
 
-  const hideMessageAfterDelay = () => {
-    setTimeout(() => {
-      setSlideOut(true);
-      setTimeout(() => {
-        setMessageKey('');
-        setMessageType('');
-        setErrorMessage('');
-      }, 500);
-    }, 5000);
+  const renderErrorDetails = () => {
+    return errorDetails.map((detail, index) => {
+      const attributeName = t(`attributes.user.${detail.attribute}`, { defaultValue: detail.attribute });
+      const errorMessage = t(`activerecord.errors.models.user.attributes.${detail.attribute}.${detail.error}`, { defaultValue: detail.error });
+      return (
+        <div key={index}>
+          {attributeName}: {errorMessage}
+        </div>
+      );
+    });
+  };
+
+  const renderError = () => {
+    if (errorMessageKey) {
+      return (
+        <Alert variant={messageType}>
+          {t(errorMessageKey)}
+          {renderErrorDetails()}
+        </Alert>
+      );
+    }
+    return null;
+  };
+
+  const getValidationClass = (attribute) => {
+    return errorDetails.some(detail => detail.attribute === attribute) ? 'is-invalid' : '';
   };
 
   if (loading) return <div>{t('sectorForm.loading')}</div>;
@@ -157,25 +166,39 @@ const App = () => {
                   </Button>
                 </Col>
               </Row>
-              {messageKey && (
-                <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>
-                  {t(messageKey)}
-                  {errorMessage && <div>{errorMessage}</div>}
-                </Alert>
-              )}
+              {renderError()}
               <Form onSubmit={handleSubmit} data-testid="sector-form">
                 <Form.Group controlId="formName">
                   <Form.Label>{t('sectorForm.name')}</Form.Label>
-                  <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+                  <Form.Control
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={getValidationClass('name')}
+                    required
+                  />
                 </Form.Group>
                 <Form.Group controlId="formSectors" className="mt-3">
                   <Form.Label>{t('sectorForm.sectors')}</Form.Label>
-                  <Form.Control as="select" multiple className="large-select" value={sectorIds} onChange={(e) => setSectorIds(Array.from(e.target.selectedOptions).map(option => parseInt(option.value)))}>
+                  <Form.Control
+                    as="select"
+                    multiple
+                    className={`large-select ${getValidationClass('sectors')}`}
+                    value={sectorIds}
+                    onChange={(e) => setSectorIds(Array.from(e.target.selectedOptions).map(option => parseInt(option.value)))}
+                  >
                     {renderOptions(sectors)}
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="formAgree" className="mt-3">
-                  <Form.Check type="checkbox" label={t('sectorForm.agreeToTerms')} checked={agreeToTerms} onChange={(e) => setAgreeToTerms(e.target.checked)} required />
+                  <Form.Check
+                    type="checkbox"
+                    label={t('sectorForm.agreeToTerms')}
+                    checked={agreeToTerms}
+                    onChange={(e) => setAgreeToTerms(e.target.checked)}
+                    className={getValidationClass('agree_to_terms')}
+                    required
+                  />
                 </Form.Group>
                 <Button variant="primary" type="submit" block="true" className="mt-4">{t('sectorForm.save')}</Button>
               </Form>
