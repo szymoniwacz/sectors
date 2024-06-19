@@ -15,7 +15,6 @@ const App = () => {
   const [messageKey, setMessageKey] = useState('');
   const [messageType, setMessageType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [slideOut, setSlideOut] = useState(false);
 
   useEffect(() => {
     const fetchSectors = async () => {
@@ -49,13 +48,6 @@ const App = () => {
     fetchUser();
   }, [i18n.language]);
 
-  useEffect(() => {
-    if (messageKey) {
-      setSlideOut(false);
-      hideMessageAfterDelay();
-    }
-  }, [i18n.language, messageKey]);
-
   const renderOptions = (sectors, parentId = null, level = 0) =>
     sectors
       .filter(sector => sector.parent_id === parentId)
@@ -73,15 +65,11 @@ const App = () => {
       setMessageKey('sectorForm.formSubmittedSuccessfully');
       setMessageType('success');
       setErrorMessage('');
-      setSlideOut(false);
-      hideMessageAfterDelay();
     } catch (error) {
       console.error('Error submitting form:', error);
       setMessageKey('sectorForm.failedToSubmitForm');
       setMessageType('danger');
       setErrorMessage(error.response?.data?.error?.details || error.message);
-      setSlideOut(false);
-      hideMessageAfterDelay();
     }
   };
 
@@ -93,31 +81,16 @@ const App = () => {
       setAgreeToTerms(false);
       setMessageKey('sectorForm.loggedOutSuccessfully');
       setMessageType('info');
-      setSlideOut(false);
-      hideMessageAfterDelay();
     } catch (error) {
       console.error('Error logging out:', error);
       setMessageKey('sectorForm.failedToLogout');
       setMessageType('danger');
       setErrorMessage(error.response?.data?.error?.details || error.message);
-      setSlideOut(false);
-      hideMessageAfterDelay();
     }
   };
 
   const handleLanguageChange = (language) => {
     i18n.changeLanguage(language);
-  };
-
-  const hideMessageAfterDelay = () => {
-    setTimeout(() => {
-      setSlideOut(true);
-      setTimeout(() => {
-        setMessageKey('');
-        setMessageType('');
-        setErrorMessage('');
-      }, 500);
-    }, 5000);
   };
 
   if (loading) return <div>{t('sectorForm.loading')}</div>;
@@ -158,7 +131,7 @@ const App = () => {
                 </Col>
               </Row>
               {messageKey && (
-                <Alert variant={messageType} className={slideOut ? 'alert-slide-out' : ''}>
+                <Alert variant={messageType}>
                   {t(messageKey)}
                   {errorMessage && <div>{errorMessage}</div>}
                 </Alert>
