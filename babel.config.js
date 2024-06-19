@@ -1,9 +1,9 @@
 module.exports = function(api) {
   const env = api.env();
 
-  if (env !== 'development' && env !== 'test') {
-    api.cache(true);
-  }
+  // if (env !== 'development' && env !== 'test') {
+  //   api.cache(true);
+  // }
 
   var validEnv = ['development', 'test', 'production'];
   var currentEnv = api.env();
@@ -29,13 +29,13 @@ module.exports = function(api) {
     plugins: [
       'babel-plugin-macros',
       '@babel/plugin-syntax-dynamic-import',
+      '@babel/plugin-proposal-private-methods',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       '@babel/plugin-transform-destructuring',
       '@babel/plugin-transform-for-of',
       '@babel/plugin-transform-runtime',
       '@babel/plugin-proposal-class-properties',
       '@babel/plugin-proposal-optional-chaining',
-      '@babel/plugin-proposal-private-methods',
       '@babel/plugin-proposal-private-property-in-object',
       [
         '@babel/plugin-proposal-object-rest-spread',

@@ -1,11 +1,5 @@
-const { environment } = require('@rails/webpacker');
-const babelLoader = environment.loaders.get('babel');
-babelLoader.use.find(({ loader }) => loader === 'babel-loader').options.cacheDirectory = false;
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-module.exports = environment;
+const environment = require('./environment')
 
-describe('Sample test suite', () => {
-  test('Sample test', () => {
-    expect(true).toBe(true);
-  });
-});
+module.exports = environment.toWebpackConfig()
