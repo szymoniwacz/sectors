@@ -1,14 +1,46 @@
 {
+  "errors": {
+    "validation_failed": "Kinnitamine ebaõnnestus",
+    "record_invalid": "Kirje on vigane"
+  },
+  "activerecord": {
+    "errors": {
+      "models": {
+        "user": {
+          "attributes": {
+            "name": {
+              "blank": "ei tohi olla tühi",
+              "taken": "on juba kasutusel"
+            },
+            "sectors": {
+              "blank": "peavad olema valitud"
+            },
+            "agree_to_terms": {
+              "inclusion": "peab olema aktsepteeritud"
+            }
+          }
+        }
+      }
+    }
+  },
+  "attributes": {
+    "user": {
+      "name": "Nimi",
+      "sectors": "Sektorid",
+      "agree_to_terms": "Nõustu tingimustega"
+    }
+  },
   "sectorForm": {
-    "title": "Sektori Vorm",
+    "loading": "Laadimine...",
+    "title": "Sektori vorm",
     "name": "Nimi",
     "sectors": "Sektorid",
-    "agreeToTerms": "Nõustun tingimustega",
+    "agreeToTerms": "Nõustu tingimustega",
     "save": "Salvesta",
-    "formSubmittedSuccessfully": "Vorm edukalt esitatud!",
-    "failedToSubmitForm": "Vormi esitamine ebaõnnestus.",
-    "loading": "Laadimine...",
-    "logout": "Logi välja",
-    "loggedOutSuccessfully": "Edukalt välja logitud"
+    "formSubmittedSuccessfully": "Vorm on edukalt esitatud",
+    "failedToSubmitForm": "Vormi esitamine ebaõnnestus",
+    "loggedOutSuccessfully": "Edukalt välja logitud",
+    "failedToLogout": "Logi välja ebaõnnestus",
+    "logout": "Logi välja"
   }
 }
