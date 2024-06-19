@@ -1,13 +1,9 @@
 {
-  "name": "Sectors",
-  "version": "1.0.0",
-  "license": "MIT",
   "dependencies": {
     "@babel/core": "7.16.0",
     "@babel/plugin-proposal-class-properties": "7.16.0",
-    "@babel/plugin-syntax-jsx": "^7.24.7",
     "@babel/preset-env": "7.16.0",
-    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-react": "7.16.0",
     "@popperjs/core": "^2.11.8",
     "@rails/webpacker": "5.4.4",
     "axios": "^1.7.2",
@@ -25,7 +21,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
-    "@babel/plugin-proposal-private-methods": "^7.16.0",
+    "@babel/plugin-proposal-private-methods": "7.16.0",
     "@babel/plugin-transform-for-of": "^7.24.7",
     "@babel/plugin-transform-regenerator": "^7.24.7",
     "@babel/plugin-transform-runtime": "^7.24.7",
@@ -38,13 +34,7 @@
     "webpack-dev-server": "^3"
   },
   "scripts": {
-    "test": "jest",
-    "webpack": "webpack --mode production",
-    "webpack-dev-server": "webpack-dev-server",
-    "build": "node --max-old-space-size=512 node_modules/.bin/webpack"
-  },
-  "engines": {
-    "node": "16.x"
+    "test": "jest"
   },
   "jest": {
     "testEnvironment": "jest-environment-jsdom",
